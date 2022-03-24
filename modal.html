@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Modal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+        }
+
+        #modal {
+            inset: 0;
+            position: fixed;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .opacity-0 {
+            opacity: 0;
+        }
+
+        .opacity-1 {
+            opacity: 1;
+        }
+
+        #modal-mask {
+            inset: 0;
+            position: absolute;
+            background-color: #111;
+            opacity: 0.3;
+        }
+
+        #modal-container {
+            position: relative;
+            height: 200px;
+            width: 300px;
+            background-color: #fff;
+            border-radius: 2px;
+            margin: calc(50vh - 100px) auto 0;
+            color: #111;
+            z-index: 1;
+        }
+
+        #modal-container > .header {
+            box-sizing: border-box;
+            padding: 0 8px;
+            height: 40px;
+            line-height: 40px;
+            border-bottom: 1px solid #ccc;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        #modal-container > .footer {
+            box-sizing: border-box;
+            padding: 0 8px;
+            height: 40px;
+            border-top: 1px solid #ccc;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+        }
+
+        #modal-container > .body {
+            box-sizing: border-box;
+            padding: 8px;
+            position: absolute;
+            top: 40px;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            height: calc(200px - 40px - 40px);
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <button id="open-button">Open Modal</button>
+
+    <div id="introduction">
+        <ol>
+            <li>点击按钮能够打开弹窗</li>
+            <li>弹窗布局正确</li>
+            <li>点击遮照、关闭按钮关闭弹窗</li>
+        </ol>
+        <ol start="4">
+            <li>增加弹窗出现和消失的动画效果</li>
+        </ol>
+    </div>
+</div>
+
+<div id="modal" class="opacity-0">
+    <div id="modal-mask"></div>
+    <div id="modal-container">
+        <div class="header">User Agent</div>
+        <div class="body"></div>
+        <div class="footer">
+            <button>Close</button>
+        </div>
+    </div>
+</div>
+<script>
+    window.addEventListener('error', (err) => {
+        const divRef = document.createElement('div')
+        divRef.textContent = err.message
+        divRef.style.color = 'red'
+        document.body.appendChild(divRef)
+    })
+</script>
+<script>
+    const $ = (s) => document.querySelector(s);
+
+    const buttonRef = $("#open-button");
+    const modalRef = $("#modal");
+    const modalMaskRef = $("#modal-mask");
+    const modalBodyRef = $("#modal-container > .body");
+    const modalCloseButtonRef = $("#modal-container > .footer > button");
+
+    function showModal() {
+        modalBodyRef.textContent = navigator.userAgent;
+        modalRef.style.display = "block";
+        setTimeout(() => {
+            modalRef.classList.replace("opacity-0", "opacity-1");
+        });
+    }
+
+    function hideModal() {
+        modalRef.classList.replace("opacity-1", "opacity-0");
+        setTimeout(() => {
+            modalRef.style.display = "none";
+        }, 500);
+    }
+
+    buttonRef.addEventListener("click", (ev) => {
+        showModal();
+    });
+    modalMaskRef.addEventListener("click", (ev) => {
+        hideModal();
+    });
+    modalCloseButtonRef.addEventListener("click", (ev) => {
+        hideModal();
+    });
+</script>
+</body>
+</html>

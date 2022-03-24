@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: sans-serif;
+        }
+
+        #introduction {
+            width: 360px;
+        }
+
+        #container {
+            width: 320px;
+            height: 360px;
+            border: 1px solid #ccc;
+        }
+
+        #messages {
+            box-sizing: border-box;
+            padding: 12px;
+            height: calc(100% - 40px);
+            overflow: auto;
+        }
+
+        #messages .message-text {
+            word-break: break-all;
+        }
+
+        #input-bar {
+            box-sizing: border-box;
+            border-top: 1px solid #ccc;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #input {
+            width: 240px;
+        }
+
+        #button {
+            cursor: pointer;
+            height: 28px;
+            width: 52px;
+        }
+
+        #button:disabled {
+            cursor: not-allowed;
+        }
+
+        #introduction > ol > li {
+            margin: 0.25rem 0;
+        }
+    </style>
+</head>
+<body>
+<div id="introduction">
+    <ol>
+        <li>布局正确，可发送文本消息到消息框</li>
+        <li>发送消息后，清空输入框</li>
+        <li>若消息框中内容超出容器高度，可滚动</li>
+        <li>发送新消息后，消息框内容滚动到最新消息</li>
+    </ol>
+    <ol start="5">
+        <li>若输入框为空，发送按钮无法点击</li>
+        <li>可使用回车发送新消息</li>
+        <li>点击发送按钮后，文本输入框保持焦点</li>
+    </ol>
+</div>
+
+<div id="container">
+    <div id="messages"></div>
+    <div id="input-bar">
+        <label>
+            <input id="input" type="text"/>
+        </label>
+        <button disabled id="button">Send</button>
+    </div>
+</div>
+<script>
+    window.addEventListener('error', (err) => {
+        const divRef = document.createElement('div')
+        divRef.textContent = err.message
+        divRef.style.color = 'red'
+        document.body.appendChild(divRef)
+    })
+</script>
+<script>
+    const $ = (s) => document.querySelector(s);
+    const inputRef = $("#input");
+    const buttonRef = $("#button");
+    const messagesRef = $("#messages");
+    //
+    buttonRef.disabled = !inputRef.value;
+
+    inputRef.addEventListener("input", (ev) => {
+        const val = ev.target.value;
+        buttonRef.disabled = !val;
+    });
+
+    function send() {
+        const val = inputRef.value;
+        if (!val) {
+            return;
+        }
+        const divRef = document.createElement("div");
+        divRef.innerHTML = `
+          <strong>${new Date().toLocaleTimeString()}: </strong>
+          <span class="message-text">${val}</span>
+        `;
+        messagesRef.appendChild(divRef);
+        inputRef.value = "";
+        buttonRef.disabled = true;
+        requestAnimationFrame(() => {
+            messagesRef.scrollTo({
+                top: messagesRef.scrollHeight,
+                behavior: "smooth"
+            });
+        });
+    }
+
+    inputRef.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") {
+            send();
+        }
+    });
+
+    buttonRef.addEventListener("mousedown", (ev) => {
+        ev.preventDefault();
+        send();
+    });
+
+    buttonRef.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") {
+            send();
+        }
+    });
+</script>
+</body>
+</html>

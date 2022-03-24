@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Tooltip</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+        }
+
+        #tooltip {
+            box-sizing: border-box;
+            width: 200px;
+            height: 50px;
+            box-shadow: rgba(0, 0, 0, 0) 0 0 0 0, rgba(0, 0, 0, 0) 0 0 0 0, rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <button id="hover-button">Hover Here</button>
+
+    <div id="control">
+        <label>
+            <input type="radio" value="hover" name="mode" checked>悬浮模式
+        </label>
+        <label>
+            <input type="radio" value="click" name="mode">点击模式
+        </label>
+    </div>
+
+    <div id="introduction">
+        <ol>
+            <li>鼠标悬浮在按钮上时出现Tooltip</li>
+            <li>Tooltip布局位置正确</li>
+        </ol>
+        <ol start="4">
+            <li>支持Tooltip工作模式为点击</li>
+        </ol>
+    </div>
+
+    <div id="tooltip">
+        Here's tooltip content
+    </div>
+</div>
+<script>
+    window.addEventListener('error', (err) => {
+        const divRef = document.createElement('div')
+        divRef.textContent = err.message
+        divRef.style.color = 'red'
+        document.body.appendChild(divRef)
+    })
+</script>
+<script>
+    const $ = document.querySelector.bind(document);
+    const hoverButtonRef = $("#hover-button");
+    const tooltipRef = $("#tooltip");
+    //
+    const hoverInputRadio = $('input[name=mode][value=hover]')
+    const clickInputRadio = $('input[name=mode][value=click]')
+
+    const mode = new Proxy({ value: '' }, {
+        set(target, p, value, receiver) {
+            if (p === 'value') {
+                target[p] = value
+            }
+            if (value === 'hover') {
+                hoverInputRadio.checked = true
+                clickInputRadio.checked = false
+            }
+            if (value === 'click') {
+                hoverInputRadio.checked = false
+                clickInputRadio.checked = true
+            }
+        }
+    })
+
+    mode.value = 'hover'
+
+    hoverInputRadio.addEventListener('input', (ev) => {
+        mode.value = ev.target.value
+    })
+    clickInputRadio.addEventListener('input', (ev) => {
+        mode.value = ev.target.value
+    })
+
+
+    function showTooltip() {
+        const buttonRect = hoverButtonRef.getBoundingClientRect()
+        tooltipRef.style.top = (buttonRect.y - 50 - 4) + 'px'
+        tooltipRef.style.left = (buttonRect.x - 100 + buttonRect.width / 2) + 'px'
+        tooltipRef.style.display = 'block'
+    }
+
+    function hideTooltip() {
+        tooltipRef.style.display = ''
+    }
+
+    hoverButtonRef.addEventListener("mouseenter", (ev) => {
+        if (mode.value !== 'hover') {
+            return
+        }
+        showTooltip()
+    });
+    hoverButtonRef.addEventListener("mouseleave", (ev) => {
+        if (mode.value !== 'hover') {
+            return
+        }
+        hideTooltip()
+    });
+
+    let visible
+    hoverButtonRef.addEventListener('click', (ev) => {
+        if (mode.value !== 'click') {
+            return
+        }
+        visible = !visible
+        if (visible) {
+            showTooltip()
+        } else {
+            hideTooltip()
+        }
+    })
+</script>
+</body>
+</html>
