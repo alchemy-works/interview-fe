@@ -4,7 +4,7 @@
 
 ### Development environments
 
-- StackBlitz: https://stackblitz.com/
-- CodeSandbox: https://codesandbox.io/
-- CodePen: https://codepen.io/
+- [StackBlitz](https://stackblitz.com/)
+- [CodeSandbox](https://codesandbox.io/)
+- [CodePen](https://codepen.io/)
 - Manual
