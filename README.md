@@ -1,5 +1,5 @@
 # interview-fe
 
-- [Chat](./chat.html)
-- [Modal](./modal.html)
-- [Tooltip](./tooltip.html)
+- [Chat](html/chat.html)
+- [Modal](html/modal.html)
+- [Tooltip](html/tooltip.html)
